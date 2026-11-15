@@ -1,6 +1,6 @@
 {
-  "name": "Budget Saver",
-  "short_name": "Budget",
+  "name": "Finite",
+  "short_name": "Finite",
   "description": "Budget amplop pribadi yang tersimpan di Google Sheets Anda.",
   "start_url": "./",
   "scope": "./",

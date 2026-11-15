@@ -1,4 +1,4 @@
-# Budget Saver
+# Finite
 
 Envelope-style personal budgeting that keeps its data in your own Google Sheet and syncs between an iPhone and a Windows laptop.
 

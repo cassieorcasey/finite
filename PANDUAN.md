@@ -1,11 +1,11 @@
-# Budget Saver — Panduan Pasang (±15 menit)
+# Finite — Panduan Pasang (±15 menit)
 
 Arsitektur: `index.html` (aplikasi, di-hosting gratis) → memanggil **Apps Script** (API) → menulis ke **Google Sheets** milik Anda.
 Satu akun Google, data sama di iPhone dan laptop Windows, dan tetap bisa dibuka langsung di Sheets.
 
 ## Bagian A — Backend (Google Sheets + Apps Script)
 
-1. Buat Google Sheet baru (kosong), beri nama mis. **Budget Saver**.
+1. Buat Google Sheet baru (kosong), beri nama mis. **Finite**.
 2. Menu **Extensions → Apps Script**. Hapus isi `Code.gs` bawaan, tempel seluruh isi file `apps-script/Code.gs`.
 3. Di baris atas, ganti `GANTI_TOKEN_INI` dengan kata sandi panjang buatan Anda (≥ 24 karakter acak). Ini kunci akses API. Simpan di password manager.
 4. (Opsional) Project Settings → centang **Show "appsscript.json"** → tempel isi `apps-script/appsscript.json` agar zona waktu Asia/Jakarta.
@@ -25,7 +25,7 @@ Soal keamanan: akses "Anyone" hanya membuka pintu; setiap permintaan ditolak tan
 
 Aplikasi harus berada di alamat **https** agar bisa dipasang di iPhone.
 
-- **Netlify Drop** (paling cepat): buka app.netlify.com/drop, seret isi folder `budget-saver` (index.html, sw.js, manifest, ikon). Anda langsung dapat alamat `https://nama-acak.netlify.app`.
+- **Netlify Drop** (paling cepat): buka app.netlify.com/drop, seret isi folder aplikasi (index.html, sw.js, manifest, ikon). Anda langsung dapat alamat `https://nama-acak.netlify.app`.
 - **GitHub Pages / Cloudflare Pages**: unggah file yang sama ke repositori lalu aktifkan Pages.
 
 Folder `apps-script/` dan `test/` tidak perlu diunggah. URL Apps Script dan token **tidak** ditulis di file; Anda memasukkannya lewat menu Pengaturan, jadi aman walau situs bersifat publik.
