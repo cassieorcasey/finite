@@ -369,7 +369,10 @@ svg.i { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-widt
 .sheet-head button[disabled] { opacity: .35; pointer-events: none; }
 .amount-wrap { display: flex; align-items: baseline; justify-content: center; gap: 8px; padding: 10px 0 2px; }
 .amount-wrap .cur { font-size: 22px; font-weight: 600; color: var(--text2); }
-.amount-wrap input { width: 1ch; min-width: 1ch; max-width: 80%; border: 0; background: none; outline: 0; text-align: center; font-size: 48px; font-weight: 700; letter-spacing: -.04em; font-variant-numeric: tabular-nums; }
+.amount-wrap { position: relative; }
+.amount-wrap input, .amount-wrap .amt-measure { font: inherit; font-size: 48px; font-weight: 700; letter-spacing: -.04em; font-variant-numeric: tabular-nums; }
+.amount-wrap input { width: 1ch; min-width: 1ch; max-width: calc(100% - 48px); box-sizing: content-box; padding: 0; margin: 0; border: 0; border-radius: 0; background: none; outline: 0; text-align: center; color: inherit; -webkit-appearance: none; appearance: none; }
+.amount-wrap .amt-measure { position: absolute; left: 0; top: 0; visibility: hidden; white-space: pre; pointer-events: none; }
 .amount-wrap input::placeholder { color: var(--fill-strong); }
 .amount-wrap input:focus-visible { outline: 0; }
 .hint { text-align: center; font-size: 14px; color: var(--text2); min-height: 22px; margin-bottom: 14px; }
@@ -1241,7 +1244,7 @@ function openTxForm(kind, id, presetCat) {
   const title = (cur ? 'Ubah ' : '') + (isExp ? 'Pengeluaran' : 'Top Up') + (cur ? '' : ' Baru');
   const s = openSheet(`<form id="txf" novalidate>
     <div class="sheet-head"><button type="button" data-act="close">Batal</button><h2>${title}</h2><button type="submit" id="f-save" disabled>Simpan</button></div>
-    <div class="amount-wrap"><span class="cur">Rp</span><input id="f-amount" inputmode="numeric" autocomplete="off" placeholder="0" aria-label="Jumlah dalam rupiah"></div>
+    <div class="amount-wrap"><span class="cur">Rp</span><input id="f-amount" inputmode="numeric" autocomplete="off" placeholder="0" aria-label="Jumlah dalam rupiah"><span class="amt-measure" aria-hidden="true"></span></div>
     <p class="hint" id="f-hint" aria-live="polite"></p>
     ${cur ? '' : '<div class="qwrap" id="f-quick" hidden><div class="sec-lbl">Catat cepat</div><div class="qchips" id="f-qchips"></div></div>'}
     <div class="lbl2" id="f-cl">Kategori</div>
@@ -1280,8 +1283,24 @@ function openTxForm(kind, id, presetCat) {
   };
   const $$ = (q, r) => [...r.querySelectorAll(q)];
   amt.value = f.amount ? nf.format(Math.round(Number(f.amount))) : '';
-  const sizeAmt = () => { amt.style.width = Math.max(1, amt.value.length) + 'ch'; };
+  // Ukur lebar teks asli (bukan `ch`): di iOS Safari `ch` + padding bawaan bikin input lebih sempit dari isinya → digit pertama ke-scroll/terpotong.
+  const amtMeasure = $('.amt-measure', s);
+  const sizeAmt = () => {
+    amtMeasure.textContent = amt.value || amt.placeholder;
+    amtMeasure.style.fontSize = '';
+    let w = amtMeasure.offsetWidth;
+    if (!w) { amt.style.width = Math.max(1, amt.value.length) + 1 + 'ch'; return; }
+    // Angka panjang: kecilkan font supaya tetap muat di samping "Rp", jangan sampai ke-scroll.
+    const wrap = amt.parentElement, cur = $('.cur', wrap);
+    const avail = wrap.clientWidth - (cur ? cur.offsetWidth : 0) - 8 - 12;
+    const fs = w + 6 > avail ? Math.max(24, Math.floor(48 * avail / (w + 6))) : 48;
+    amt.style.fontSize = amtMeasure.style.fontSize = fs + 'px';
+    if (fs !== 48) w = amtMeasure.offsetWidth;
+    amt.style.width = Math.ceil(w) + 6 + 'px';
+    amt.scrollLeft = 0;
+  };
   sizeAmt();
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(sizeAmt);
   amt.addEventListener('input', () => { const d = digits().slice(0, 12); amt.value = d ? nf.format(Number(d)) : ''; sizeAmt(); refresh(); });
   amt.addEventListener('paste', (e) => { // "25000.00" / "25.000,50": 1–2 digit tail adalah desimal, bukan ribuan
     const t = ((e.clipboardData || window.clipboardData).getData('text') || '').trim().replace(/^Rp\.?\s*/i, '');
