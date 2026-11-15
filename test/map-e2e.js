@@ -55,11 +55,12 @@ const money = (v) => 'Rp ' + new Intl.NumberFormat('id-ID').format(v);
   /* ---------- iPhone ---------- */
   const { page } = await open({ width: 390, height: 844 });
   // label tab ringkas
-  assert.deepStrictEqual(await page.locator('#tabs .tab span').allInnerTexts(), ['Beranda', 'Keluar', 'Masuk', 'Peta', 'Atur']);
+  assert.deepStrictEqual(await page.locator('#tabs .tab span').allInnerTexts(), ['Beranda', 'Riwayat', 'Peta', 'Atur']);
   await page.click('.tabbar [data-tab="map"]');
   await page.waitForSelector('#mm');
   assert.strictEqual(await page.evaluate(() => location.hash), '#/map');
-  assert.strictEqual(await page.locator('.page-head h1').innerText(), 'Peta');
+  assert.strictEqual(await page.locator('#tb-title').innerText(), 'Peta');
+  assert.strictEqual(await page.evaluate(() => getComputedStyle(document.querySelector('#mm-c') || document.body).backgroundColor), 'rgb(255, 255, 255)', 'pusat peta memakai --card');
 
   // pusat = selisih bulan ini
   const inTotal = 1500000 + 400000 + 300000 + 75000 + 25000;

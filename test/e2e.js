@@ -66,16 +66,45 @@ const envText = (page, cat) => page.locator(`.env[data-cat="${cat}"]`).innerText
   await addTx(page, 'expense', 90000, 'Primary Needs', 'Belanja bulanan', d(0));
   assert.match(await page.locator('.hero .big').innerText(), new RegExp('Rp\\s' + (550000 - 90000).toLocaleString('id-ID').replace(/\./g, '\\.') + '$'));
   let t = await envText(page, 'Primary Needs');
-  assert.ok(t.includes(money(10000)) && t.includes('Hampir habis'), t);
+  assert.ok(t.includes(money(10000)), t);
+  assert.ok(await page.locator('.env[data-cat="Primary Needs"] .bar.warn').count(), 'bar oranye saat <=15%');
+  assert.ok(!t.includes('Bulan ini') && !t.includes('%'), 'kartu amplop hanya 3 elemen: ' + t);
   assert.ok((await envText(page, 'To Invest')).includes(money(400000)));
   // melebihi alokasi
   await addTx(page, 'expense', 20000, 'Primary Needs', 'Kopi', d(0));
   t = await envText(page, 'Primary Needs');
-  assert.ok(t.includes('−' + money(10000)) && t.includes('Melebihi'), t);
+  assert.ok(t.includes('−' + money(10000)), t);
+  assert.ok(await page.locator('.env.minus[data-cat="Primary Needs"]').count(), 'kartu minus diberi border merah');
+
+  // sheet detail amplop + Quick-Tap Chip + Urungkan
+  await page.click('.env[data-cat="Primary Needs"]');
+  await page.waitForSelector('.sheet .qchip');
+  const sheetTxt = await page.locator('.sheet').innerText();
+  assert.ok(/terpakai/i.test(sheetTxt) && /total top up/i.test(sheetTxt) && /catat cepat/i.test(sheetTxt), sheetTxt);
+  const nExp = () => page.evaluate(() => window.__bs.S.expenses.length);
+  const before = await nExp();
+  await page.click('.qchip:has-text("Kopi")');
+  await page.waitForSelector('.sheet', { state: 'detached' });
+  assert.strictEqual(await nExp(), before + 1, 'quick chip mencatat 1 ketukan');
+  assert.ok((await page.locator('#toast').innerText()).includes('Dicatat: Kopi'));
+  await page.click('#toast button');
+  await page.waitForFunction(() => document.querySelector('#toast').textContent.includes('Dibatalkan'));
+  assert.strictEqual(await nExp(), before, 'urungkan menghapus catatan');
+  // tombol + Pengeluaran di sheet memilih amplop otomatis
+  await page.click('.env[data-cat="To Invest"]');
+  await page.click('.sheet [data-act="new"][data-kind="expense"]');
+  await page.waitForSelector('#f-amount');
+  assert.strictEqual(await page.getAttribute('.chipgrid [aria-checked="true"]', 'data-c'), 'To Invest');
+  await page.keyboard.press('Escape');
+  await page.waitForSelector('.sheet', { state: 'detached' });
 
   // daftar pengeluaran + sisa saldo berjalan
-  await page.click('.tabbar [data-tab="expense"]');
+  await page.click('.tabbar [data-tab="history"]');
   await page.waitForSelector('.row');
+  assert.strictEqual(await page.locator('.row').count(), 5, 'Semua: 3 top up + 2 pengeluaran');
+  assert.ok((await page.locator('.summary').innerText()).includes('Arus bersih'));
+  assert.ok((await page.locator('.row:has-text("Top Up ·") .row-amt.in').count()) === 3, 'top up hijau');
+  await page.click('[data-act="htype"][data-v="expense"]');
   assert.strictEqual(await page.locator('.row').count(), 2);
   const rows = await page.locator('.row').allInnerTexts();
   assert.ok(rows.some((r) => r.includes('Kopi') && r.includes('Sisa')) , rows.join('|'));
@@ -110,7 +139,8 @@ const envText = (page, cat) => page.locator(`.env[data-cat="${cat}"]`).innerText
   await page.fill('#c-name', 'Hiburan');
   await page.click('#c-save');
   await page.waitForSelector('.sheet', { state: 'detached' });
-  assert.ok((await page.locator('.set-sec').nth(1).innerText()).includes('Hiburan'));
+  assert.ok((await page.locator('.set-sec').nth(0).innerText()).includes('Hiburan'));
+  assert.strictEqual(await page.locator('#cfg-url').count(), 0, 'pengaturan teknis tidak lagi di Atur');
   await page.click('[data-act="cat"][data-cat="Primary Needs"]');
   assert.ok(await page.locator('#c-del').isDisabled());
   await page.fill('#c-name', 'Kebutuhan Pokok');
@@ -119,32 +149,34 @@ const envText = (page, cat) => page.locator(`.env[data-cat="${cat}"]`).innerText
   await page.click('[data-act="cat"][data-cat="Hiburan"]');
   await page.click('#c-del'); await page.click('[data-dlg="ok"]');
   await page.waitForSelector('.sheet', { state: 'detached' });
-  assert.ok(!(await page.locator('.set-sec').nth(1).innerText()).includes('Hiburan'));
+  assert.ok(!(await page.locator('.set-sec').nth(0).innerText()).includes('Hiburan'));
 
-  // Liquid Glass: geser lensa dari Beranda ke Top Up lalu lepas
+  // Liquid Glass: geser lensa dari Beranda ke Peta lalu lepas
   await page.click('.tabbar [data-tab="home"]');
   await page.waitForTimeout(650);
   const lensX = () => page.evaluate(() => document.querySelector('#lens').getBoundingClientRect().left);
   const homeBox = await page.locator('.tab[data-tab="home"]').boundingBox();
-  const topBox = await page.locator('.tab[data-tab="topup"]').boundingBox();
+  const topBox = await page.locator('.tab[data-tab="map"]').boundingBox();
   const x0 = await lensX();
   await page.mouse.move(homeBox.x + homeBox.width / 2, homeBox.y + homeBox.height / 2);
   await page.mouse.down();
   assert.ok(await page.evaluate(() => document.querySelector('#tabbar').classList.contains('press')), 'lensa membesar saat ditekan');
   await page.mouse.move(topBox.x + topBox.width / 2, topBox.y + topBox.height / 2, { steps: 10 });
-  assert.ok(await page.evaluate(() => document.querySelector('.tab[data-tab="topup"]').classList.contains('hot')), 'tab di bawah lensa menyala');
+  assert.ok(await page.evaluate(() => document.querySelector('.tab[data-tab="map"]').classList.contains('hot')), 'tab di bawah lensa menyala');
   assert.ok((await lensX()) > x0 + 100, 'lensa mengikuti jari');
   await page.mouse.up();
-  await page.waitForFunction(() => location.hash === '#/topup');
-  assert.strictEqual(await page.locator('.page-head h1').innerText(), 'Top Up');
+  await page.waitForFunction(() => location.hash === '#/map');
+  assert.strictEqual(await page.locator('.page-head').count(), 0, 'judul besar dihapus');
+  assert.strictEqual(await page.locator('#tb-title').innerText(), 'Peta');
   await page.waitForTimeout(700);
   const lb = await page.locator('#lens').boundingBox();
-  assert.ok(Math.abs(lb.x + lb.width / 2 - (topBox.x + topBox.width / 2)) < 6, 'lensa menetap di Top Up');
+  assert.ok(Math.abs(lb.x + lb.width / 2 - (topBox.x + topBox.width / 2)) < 6, 'lensa menetap di Peta');
   // geser lalu batal (pointercancel tidak dipicu mouse; lepas di tab yang sama = tetap)
   // navigasi lewat keyboard tetap bisa
-  await page.locator('.tab[data-tab="expense"]').focus();
+  await page.locator('.tab[data-tab="history"]').focus();
   await page.keyboard.press('Enter');
-  await page.waitForFunction(() => location.hash === '#/expense');
+  await page.waitForFunction(() => location.hash === '#/history');
+  assert.strictEqual(await page.locator('.tabbar .tab').count(), 4);
   // scroll ke bawah -> tab bar mengecil, scroll ke atas -> normal
   await page.click('.tabbar [data-tab="home"]');
   await page.evaluate(() => { document.body.style.minHeight = '3000px'; });
@@ -162,7 +194,8 @@ const envText = (page, cat) => page.locator(`.env[data-cat="${cat}"]`).innerText
   await page.screenshot({ path: OUT + '/shot-mobile-home.png' });
 
   /* ---------- Terhubung ke (mock) Google Sheets ---------- */
-  await page.click('.tabbar [data-tab="settings"]');
+  await page.click('#pill');
+  await page.waitForSelector('#cfg-url');
   assert.ok(await page.locator('[data-act="copylink"]').isDisabled(), 'salin tautan nonaktif saat mode lokal');
   assert.ok((await page.locator('link[rel="icon"][type="image/svg+xml"]').getAttribute('href')).startsWith('data:image/svg+xml'), 'favicon tertanam');
   await page.fill('#cfg-url', 'https://contoh.com/exec');
@@ -199,12 +232,15 @@ const envText = (page, cat) => page.locator(`.env[data-cat="${cat}"]`).innerText
   const r = topSheet.getLastRow() + 1;
   topSheet.getRange(r, 1, 1, 4).setValues([[new Date(Date.UTC(+d(0).slice(0, 4), +d(0).slice(5, 7) - 1, +d(0).slice(8), -7)), 'Personal Care', 25000, 'dari Sheets']]);
   await page.click('#pill');
+  await page.click('[data-act="syncnow"]');
   await page.waitForFunction(() => document.querySelector('#pill').dataset.s === 'ok');
+  await page.keyboard.press('Escape');
+  await page.waitForSelector('.sheet', { state: 'detached' });
   await page.waitForTimeout(300);
   assert.ok((await envText(page, 'Personal Care')).includes(money(50000 + 25000 - 15000)));
 
   // perangkat kedua via tautan penyiapan (dari tombol Salin tautan perangkat lain)
-  await page.click('.tabbar [data-tab="settings"]');
+  await page.click('#pill');
   await ctx.grantPermissions(['clipboard-read', 'clipboard-write'], { origin: base });
   assert.ok(await page.locator('[data-act="copylink"]').isEnabled());
   await page.click('[data-act="copylink"]');
@@ -228,7 +264,7 @@ const envText = (page, cat) => page.locator(`.env[data-cat="${cat}"]`).innerText
   await p2.evaluate(() => window.scrollTo(0, 120)); await p2.waitForTimeout(400);
   await p2.screenshot({ path: OUT + '/shot-desktop-glass.png', clip: { x: 300, y: 0, width: 680, height: 80 } });
   await p2.evaluate(() => window.scrollTo(0, 0));
-  await p2.click('.tabbar [data-tab="expense"]');
+  await p2.click('.tabbar [data-tab="history"]');
   await p2.waitForSelector('.row');
   await p2.screenshot({ path: OUT + '/shot-desktop-expense.png' });
   // pintasan N
@@ -245,7 +281,9 @@ const envText = (page, cat) => page.locator(`.env[data-cat="${cat}"]`).innerText
   const ctx3 = await newCtx();
   const p3 = await ctx3.newPage();
   p3.on('pageerror', (e) => errors.push('p3 pageerror: ' + e.message));
-  await p3.goto(base + '#/settings');
+  await p3.goto(base + '#/topup');
+  assert.strictEqual(await p3.evaluate(() => location.hash), '#/history', 'tautan lama diarahkan ke Riwayat');
+  await p3.click('#pill');
   await p3.fill('#cfg-link', 'abc');
   await p3.click('[data-act="uselink"]');
   assert.ok((await p3.locator('#toast').innerText()).includes('tidak dikenali'));
@@ -258,7 +296,9 @@ const envText = (page, cat) => page.locator(`.env[data-cat="${cat}"]`).innerText
   assert.ok((await p3.locator('.env[data-cat="Personal Care"]').innerText()).includes(money(60000)));
 
   // mobile: form, daftar, pengaturan, gelap
-  await page.click('.tabbar [data-tab="expense"]');
+  await page.keyboard.press('Escape');
+  await page.waitForSelector('.sheet', { state: 'detached' });
+  await page.click('.tabbar [data-tab="history"]');
   await page.screenshot({ path: OUT + '/shot-mobile-expense.png' });
   await page.click('[data-act="edit"]');
   await page.waitForTimeout(500);

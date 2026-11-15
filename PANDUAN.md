@@ -28,31 +28,35 @@ Aplikasi harus berada di alamat **https** agar bisa dipasang di iPhone.
 - **Netlify Drop** (paling cepat): buka app.netlify.com/drop, seret isi folder aplikasi (index.html, sw.js, manifest, ikon). Anda langsung dapat alamat `https://nama-acak.netlify.app`.
 - **GitHub Pages / Cloudflare Pages**: unggah file yang sama ke repositori lalu aktifkan Pages.
 
-Folder `apps-script/` dan `test/` tidak perlu diunggah. URL Apps Script dan token **tidak** ditulis di file; Anda memasukkannya lewat menu Pengaturan, jadi aman walau situs bersifat publik.
+Folder `apps-script/` dan `test/` tidak perlu diunggah. URL Apps Script dan token **tidak** ditulis di file; Anda memasukkannya lewat panel Sinkronisasi di aplikasi, jadi aman walau situs bersifat publik.
 
 ## Bagian C — Hubungkan perangkat
 
 **Laptop Windows (Edge/Chrome)**
-1. Buka alamat aplikasi → **Pengaturan** → isi URL Web App + Token → **Hubungkan**.
+1. Buka alamat aplikasi → ketuk tombol status **Lokal** di kanan atas (panel Sinkronisasi) → isi URL Web App + Token → **Hubungkan**.
 2. Pasang sebagai aplikasi: Edge → ⋯ → Apps → *Install this site as an app* (Chrome: ikon install di address bar).
 
 **iPhone (Safari)**
 1. Buka alamat aplikasi di Safari → Share → **Add to Home Screen**.
-2. Buka dari ikon di layar utama → **Pengaturan**. Di iOS, aplikasi layar utama punya penyimpanan terpisah dari Safari, jadi sambungan perlu diisi di sini.
-3. Cara cepat: di laptop, Pengaturan → **Salin tautan perangkat lain**, kirim ke diri sendiri (Catatan/AirDrop/Pesan), salin, lalu di iPhone tempel ke kolom *tautan penyiapan* → **Gunakan tautan**. Tautan memuat token Anda, jadi jangan dibagikan ke orang lain.
+2. Buka dari ikon di layar utama → ketuk tombol status di kanan atas. Di iOS, aplikasi layar utama punya penyimpanan terpisah dari Safari, jadi sambungan perlu diisi di sini.
+3. Cara cepat: di laptop, tombol status → **Salin Tautan Perangkat Lain**, kirim ke diri sendiri (Catatan/AirDrop/Pesan), salin, lalu di iPhone tempel ke kolom *tautan penyiapan* → **Gunakan tautan**. Tautan memuat token Anda, jadi jangan dibagikan ke orang lain.
 
 Saat pertama menghubungkan, bila di perangkat itu sudah ada catatan lokal, Anda akan ditanya: unggah ke Sheets, atau pakai data yang ada di Sheets.
 
 ## Cara kerja sehari-hari
 
 - Catat pengeluaran/top up dari tombol **+** atau tombol di kartu Total Cash. Di laptop tekan **N**.
+- Tab bar berisi **Beranda · Riwayat · Peta · Atur**. Atur hanya untuk kategori dan tema; semua urusan Google Sheets ada di tombol status kanan atas.
+- Ketuk kartu amplop di Beranda untuk melihat detailnya. Bagian **Catat cepat** menampilkan hingga 4 kebiasaan transaksi terbanyak (60 hari terakhir, keterangan + nominal yang sama). Satu ketukan langsung mencatat dengan tanggal hari ini; tombol **Urungkan** muncul selama 3,5 detik. Chip yang sama juga muncul di form transaksi baru, mengikuti kategori yang dipilih.
+- Tab **Riwayat** menggabungkan pengeluaran dan top up. Pilih Semua, Keluar, atau Masuk, lalu saring per amplop. Mode Semua menampilkan arus bersih bulan itu.
+- Warna bar amplop: warna kategori bila aman, oranye bila sisa ≤ 15%, dan kartu bergaris merah bila saldo minus.
 - Tab **Peta**: mind map aliran uang bulan terpilih. Pusatnya selisih (masuk − keluar); Masuk dan Keluar bercabang per kategori lalu per keterangan (5 terbesar + Lainnya). Ketuk kategori untuk buka/lipat, ketuk keterangan untuk melihat dan mengedit transaksinya. Di laptop lebar tampil kiri-kanan, di iPhone atas-bawah.
 - Tab bar kaca: ketuk, atau tekan lalu geser lensa ke tab lain dan lepas. Di iPhone tab bar mengecil saat scroll ke bawah dan kembali saat scroll ke atas. Efek refraksi tepi kaca aktif di Edge/Chrome; Safari memakai blur kaca biasa.
 - Tanpa internet: catatan tersimpan di perangkat dan dikirim otomatis saat online (indikator *Offline · n*).
 - Aplikasi menyinkron saat dibuka, setiap 90 detik, dan saat Anda mengetuk indikator di kanan atas.
 - Boleh mengisi/mengubah langsung di Google Sheets; muncul di aplikasi pada sinkron berikutnya. Kolom ID yang disembunyikan jangan dihapus.
 - Kategori maksimal 10 (sama dengan Dashboard di Sheets). Mengganti nama kategori ikut memperbarui semua transaksinya. Kategori yang masih punya transaksi tidak bisa dihapus.
-- Ekspor CSV ada di Pengaturan → Data.
+- Ekspor CSV ada di panel Sinkronisasi (ketuk tombol status di kanan atas).
 
 ## Perbedaan kecil dari file Excel
 

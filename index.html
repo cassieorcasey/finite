@@ -41,6 +41,7 @@
   --lg-shadow: 0 12px 34px rgba(0,0,0,.13), 0 2px 6px rgba(0,0,0,.07), inset 0 0 0 .5px rgba(0,0,0,.07);
   --lens: rgba(120,120,128,.15);
   --lens-press: rgba(255,255,255,.38);
+  --seg-on: #ffffff;
   --spring: cubic-bezier(.3,1.4,.5,1);
   --font: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", "Segoe UI Variable Display", "Segoe UI", system-ui, sans-serif;
   --safe-b: env(safe-area-inset-bottom, 0px);
@@ -57,7 +58,7 @@
     --shadow: 0 0 0 1px rgba(255,255,255,.06);
     --lg-tint: rgba(36,36,40,.42); --lg-rim: rgba(255,255,255,.42); --lg-rim-soft: rgba(255,255,255,.06);
     --lg-sheen: rgba(255,255,255,.12); --lg-shadow: 0 12px 34px rgba(0,0,0,.55), 0 2px 6px rgba(0,0,0,.4);
-    --lens: rgba(255,255,255,.13); --lens-press: rgba(255,255,255,.2);
+    --lens: rgba(255,255,255,.13); --lens-press: rgba(255,255,255,.2); --seg-on: #636366;
     color-scheme: dark;
   }
 }
@@ -70,7 +71,7 @@
   --shadow: 0 0 0 1px rgba(255,255,255,.06);
     --lg-tint: rgba(36,36,40,.42); --lg-rim: rgba(255,255,255,.42); --lg-rim-soft: rgba(255,255,255,.06);
     --lg-sheen: rgba(255,255,255,.12); --lg-shadow: 0 12px 34px rgba(0,0,0,.55), 0 2px 6px rgba(0,0,0,.4);
-    --lens: rgba(255,255,255,.13); --lens-press: rgba(255,255,255,.2);
+    --lens: rgba(255,255,255,.13); --lens-press: rgba(255,255,255,.2); --seg-on: #636366;
   color-scheme: dark;
 }
 
@@ -103,8 +104,11 @@ h1, h2, h3, p { margin: 0; }
   -webkit-backdrop-filter: saturate(180%) blur(22px); backdrop-filter: saturate(180%) blur(22px);
 }
 .topbar-in { max-width: 1040px; margin: 0 auto; padding: 8px 16px; min-height: 52px; display: flex; align-items: center; gap: 10px; }
-.tb-title { font-weight: 600; font-size: 17px; opacity: 0; transition: opacity .2s; }
-.topbar.scrolled .tb-title { opacity: 1; }
+.tb-lead { position: relative; min-width: 0; height: 32px; display: flex; align-items: center; }
+.tb-title { position: absolute; left: 0; font-weight: 600; font-size: 17px; white-space: nowrap; opacity: 0; transform: translateY(4px); transition: opacity .2s, transform .25s; }
+.topbar.scrolled .tb-title { opacity: 1; transform: none; }
+.tb-lead .brand { transition: opacity .2s; }
+.topbar.scrolled .tb-lead .brand { opacity: 0; }
 .grow { flex: 1; }
 
 .pill {
@@ -133,7 +137,8 @@ h1, h2, h3, p { margin: 0; }
 svg.i { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; flex: none; }
 .icon-btn svg.i { width: 20px; height: 20px; stroke-width: 2.2; }
 
-.brand { display: none; }
+.brand { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 17px; letter-spacing: -.025em; }
+.brand-ic { width: 24px; height: 24px; flex: none; }
 /* Liquid Glass: kapsul kaca mengambang + lensa elastis */
 .tabbar {
   --h: 64px; --pad: 5px;
@@ -186,10 +191,9 @@ svg.i { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-widt
 .tabbar.mini { --h: 50px; width: min(calc(100% - 96px), 300px); }
 .tabbar.mini .tab span { opacity: 0; max-height: 0; }
 
-/* ---------- Page header ---------- */
-.page-head { padding: 4px 0 18px; }
-.page-head h1 { font-size: 34px; line-height: 1.12; font-weight: 700; letter-spacing: -.03em; }
-.page-head p { color: var(--text2); font-size: 15px; margin-top: 2px; }
+.main { padding-top: 6px; }
+.toolbar { display: flex; flex-direction: column; align-items: flex-start; gap: 12px; margin-bottom: 14px; }
+.toolbar .seg { align-self: stretch; }
 
 .section-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 32px 0 12px; flex-wrap: wrap; }
 .section-head h2 { font-size: 22px; font-weight: 700; letter-spacing: -.025em; }
@@ -217,7 +221,7 @@ svg.i { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-widt
 .hero .barcap { font-size: 13px; color: rgba(245,245,247,.72); }
 .hero .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 18px; padding-top: 16px; border-top: 1px solid rgba(255,255,255,.14); }
 .hero .stat small { display: block; font-size: 12px; color: rgba(245,245,247,.66); line-height: 1.25; }
-.hero .stat b { display: block; font-size: 15px; overflow-wrap: anywhere; font-weight: 600; margin-top: 3px; font-variant-numeric: tabular-nums; letter-spacing: -.02em; }
+.hero .stat b { display: block; font-size: clamp(13px, 3.7vw, 15px); white-space: nowrap; font-weight: 600; margin-top: 3px; font-variant-numeric: tabular-nums; letter-spacing: -.02em; }
 .hero .actions { display: flex; gap: 10px; margin-top: 20px; }
 .hero .actions .btn { padding: 0 16px; font-size: 15px; flex: 1 1 auto; }
 .hero .stats { align-items: start; }
@@ -246,33 +250,60 @@ svg.i { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-widt
   text-align: left; background: var(--card); border-radius: 22px; padding: 18px 18px 16px; box-shadow: var(--shadow);
   display: block; width: 100%; transition: transform .2s cubic-bezier(.2,.8,.2,1), box-shadow .2s;
 }
-.env:hover { transform: translateY(-2px); }
-.env:active { transform: scale(.975); }
+@media (hover: hover) { .env:hover { transform: translateY(-2px); } }
+.env:active { transform: scale(.97); }
+.env.minus { box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--bad) 45%, transparent), var(--shadow); }
 .row:active { background: var(--fill-strong); }
-.env-top { display: flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 600; }
+.env-top { display: flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 600; min-width: 0; }
 .env-top .nm { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.env-top .pc { color: var(--text2); font-weight: 500; font-variant-numeric: tabular-nums; }
 .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--c); flex: none; }
-.env-note { font-size: 13px; color: var(--text2); margin-top: 1px; min-height: 18px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.env-bal { font-size: 30px; font-weight: 700; letter-spacing: -.035em; margin: 10px 0 10px; font-variant-numeric: tabular-nums; }
+.env-bal { font-size: 28px; font-weight: 700; letter-spacing: -.035em; line-height: 1.15; margin: 12px 0 14px; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
 .env-bal.neg { color: var(--bad); }
 .bar { height: 6px; border-radius: 99px; background: var(--fill); overflow: hidden; }
-.bar i { display: block; height: 100%; border-radius: 99px; background: var(--c); transition: width .5s cubic-bezier(.2,.8,.2,1); }
-.env-meta { display: flex; justify-content: space-between; gap: 10px; margin-top: 12px; font-size: 13px; color: var(--text2); }
-.env-meta b { color: var(--text); font-weight: 600; font-variant-numeric: tabular-nums; }
-.flag { margin-top: 10px; font-size: 13px; font-weight: 600; }
-.flag.bad { color: var(--bad); } .flag.warn { color: var(--warn); }
+.bar i { display: block; height: 100%; border-radius: 99px; background: var(--c); transition: width .5s cubic-bezier(.2,.8,.2,1), background .3s; }
+.bar.warn i { background: var(--warn); }
+/* Sheet detail amplop */
+.es-note { font-size: 15px; color: var(--text2); margin: 2px 4px 0; }
+.es-card { background: var(--sheet-card); border-radius: 20px; padding: 18px; margin: 14px 0 0; }
+.es-card .env-bal { font-size: 34px; margin: 0 0 12px; }
+.es-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
+.es-grid div { background: var(--sheet-card); border-radius: 16px; padding: 12px 14px; }
+.es-grid small { display: block; font-size: 13px; color: var(--text2); }
+.es-grid b { display: block; font-size: 17px; font-weight: 600; font-variant-numeric: tabular-nums; margin-top: 2px; overflow-wrap: anywhere; }
+.es-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px; }
+.sheet .es-actions .btn.btn { height: 50px; width: 100%; margin: 0; }
+.sheet .btn.second { background: var(--sheet-card); color: var(--accent); }
+.sheet-title { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-width: 0; }
+.sheet-title span:last-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sec-lbl { font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: .02em; color: var(--text2); margin: 22px 4px 8px; }
+/* Quick-Tap Chips */
+.qchips { display: flex; flex-wrap: wrap; gap: 8px; }
+.qchip {
+  min-height: 44px; max-width: 100%; padding: 0 16px; border-radius: 999px; background: var(--sheet-card);
+  box-shadow: inset 0 0 0 1px var(--line); font-size: 15px; font-weight: 500;
+  display: inline-flex; align-items: center; gap: 6px; transition: transform .2s var(--spring);
+}
+.qchip:active { transform: scale(.95); transition-duration: 0s; }
+.qchip span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.qchip b { font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.qchip svg.i { width: 16px; height: 16px; stroke-width: 2.4; color: var(--accent); }
+.qwrap { margin: -4px 0 18px; }
+.qwrap[hidden] { display: none; }
+.qwrap .sec-lbl { margin-top: 0; }
 
 /* ---------- Lists ---------- */
 .summary { background: var(--card); border-radius: 22px; padding: 18px 20px; box-shadow: var(--shadow); }
 .summary small { color: var(--text2); font-size: 14px; }
 .summary .v { font-size: 34px; font-weight: 700; letter-spacing: -.035em; font-variant-numeric: tabular-nums; }
+.summary .v.neg { color: var(--bad); }
 .chips { display: flex; gap: 8px; overflow-x: auto; padding: 14px 0 4px; margin: 0 -16px; padding-inline: 16px; scrollbar-width: none; }
 .chips::-webkit-scrollbar { display: none; }
 .chip { flex: none; height: 34px; padding: 0 14px; border-radius: 999px; background: var(--fill); font-size: 15px; font-weight: 500; display: inline-flex; align-items: center; gap: 7px; }
 .chip[aria-checked="true"], .chip[aria-pressed="true"] { background: var(--text); color: var(--bg); }
 .chip .dot { width: 8px; height: 8px; }
-.date-h { margin: 22px 4px 8px; font-size: 13px; font-weight: 600; color: var(--text2); text-transform: uppercase; letter-spacing: .02em; display: flex; justify-content: space-between; }
+.date-h { margin: 22px 4px 8px; font-size: 13px; font-weight: 600; color: var(--text2); display: flex; justify-content: space-between; gap: 12px; }
+.date-h span:first-child { text-transform: uppercase; letter-spacing: .02em; }
+.date-h span:last-child { font-variant-numeric: tabular-nums; }
 .group { background: var(--card); border-radius: 18px; overflow: hidden; box-shadow: var(--shadow); }
 .row { width: 100%; display: flex; align-items: center; gap: 12px; padding: 10px 16px; min-height: 60px; text-align: left; position: relative; }
 .row + .row::before { content: ""; position: absolute; top: 0; left: 64px; right: 0; border-top: 1px solid var(--line); }
@@ -307,7 +338,7 @@ svg.i { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-widt
 .btn-row { display: flex; gap: 10px; margin-top: 12px; flex-wrap: wrap; }
 .seg { display: flex; background: var(--fill); border-radius: 10px; padding: 2px; }
 .seg button { flex: 1; height: 32px; border-radius: 8px; font-size: 14px; font-weight: 500; }
-.seg button[aria-checked="true"] { background: var(--card); box-shadow: 0 1px 4px rgba(0,0,0,.18); font-weight: 600; }
+.seg button[aria-checked="true"] { background: var(--seg-on); box-shadow: 0 1px 4px rgba(0,0,0,.18); font-weight: 600; }
 .status-line { display: flex; align-items: center; gap: 8px; padding: 14px 16px; font-size: 15px; }
 .status-line i { width: 10px; height: 10px; border-radius: 50%; background: var(--text2); flex: none; }
 .status-line[data-s="ok"] i { background: #34c759; } .status-line[data-s="error"] i { background: #ff3b30; } .status-line[data-s="pending"] i { background: #ff9500; }
@@ -344,6 +375,8 @@ svg.i { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-widt
 .chipgrid .chip[aria-checked="true"] { background: var(--accent); color: var(--on-accent); }
 .sheet .btn.danger { width: 100%; margin-top: 18px; background: var(--sheet-card); }
 .sheet .btn.primary { width: 100%; margin-top: 18px; height: 50px; }
+.sheet .btn-row .btn { width: auto; flex: 1 1 auto; margin-top: 0; height: 44px; }
+.sheet .btn-row .btn.plain { background: var(--sheet-card); }
 @media (min-width: 700px) {
   .sheet { left: 50%; top: 50%; bottom: auto; right: auto; width: 480px; border-radius: 24px; padding-bottom: 24px; transform: translate(-50%, -46%) scale(.97); opacity: 0; transition: transform .3s cubic-bezier(.2,.9,.25,1), opacity .2s; }
   .sheet.open { transform: translate(-50%, -50%) scale(1); opacity: 1; }
@@ -358,11 +391,17 @@ svg.i { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-widt
 
 .toast {
   position: fixed; left: 50%; bottom: calc(92px + var(--safe-b)); z-index: 70; transform: translate(-50%, 20px);
-  background: rgba(40,40,44,.94); color: #f5f5f7; padding: 11px 18px; border-radius: 999px; font-size: 15px; font-weight: 500;
-  max-width: calc(100vw - 32px); opacity: 0; pointer-events: none; transition: opacity .25s, transform .3s cubic-bezier(.2,.9,.25,1);
+  display: flex; align-items: center; gap: 14px; min-height: 44px;
+  background: rgba(40,40,44,.94); color: #f5f5f7; padding: 0 20px; border-radius: 999px; font-size: 15px; font-weight: 500;
+  max-width: calc(100vw - 32px); width: max-content; opacity: 0; pointer-events: none; transition: opacity .25s, transform .3s cubic-bezier(.2,.9,.25,1);
   -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px);
 }
 .toast.show { opacity: 1; transform: translate(-50%, 0); }
+.toast.act { padding-right: 6px; }
+.toast.act.show { pointer-events: auto; }
+.toast .tm { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.toast button { flex: none; height: 34px; padding: 0 14px; border-radius: 999px; background: rgba(255,255,255,.14); color: #64b5ff; font-weight: 600; }
+.toast button:hover { background: rgba(255,255,255,.22); }
 
 /* ---------- Peta (mind map) ---------- */
 .mm { position: relative; display: flex; flex-direction: column; gap: 22px; padding: 6px 0 10px; }
@@ -399,13 +438,12 @@ svg.i { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-widt
 @keyframes mmIn { from { opacity: 0; } }
 .mm-none { position: relative; z-index: 1; padding: 10px 14px; border-radius: 14px; font-size: 14px; color: var(--text2); border: 1px dashed var(--fill-strong); }
 .mm-center {
-  position: relative; z-index: 1; padding: 16px 18px; border-radius: 22px; color: #f5f5f7;
-  background: radial-gradient(70% 120% at 100% 0%, rgba(41,151,255,.4), transparent 62%), radial-gradient(60% 90% at 0% 100%, rgba(175,82,222,.28), transparent 60%), #0a0a0c;
-  border: 1px solid rgba(255,255,255,.08);
+  position: relative; z-index: 1; padding: 16px 18px; border-radius: 22px; color: var(--text);
+  background: var(--card); border: 1px solid var(--line); box-shadow: var(--shadow);
 }
-.mm-center small, .mm-center span { display: block; font-size: 13px; color: rgba(245,245,247,.72); }
+.mm-center small, .mm-center span { display: block; font-size: 13px; color: var(--text2); }
 .mm-center b { display: block; font-size: 30px; font-weight: 700; letter-spacing: -.035em; line-height: 1.15; margin: 2px 0; font-variant-numeric: tabular-nums; }
-.mm-center b.neg { color: #ff8a80; }
+.mm-center b.neg { color: var(--bad); }
 @media (min-width: 1100px) {
   .mm { display: grid; grid-template-columns: minmax(0, 1fr) 216px minmax(0, 1fr); align-items: center; gap: 0 44px; padding: 16px 0; }
   .mm-side { padding-left: 0; align-self: center; }
@@ -435,9 +473,12 @@ svg.i { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-widt
 }
 @media (min-width: 900px) {
   .topbar-in { min-height: 68px; }
-  .brand { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 18px; letter-spacing: -.03em; }
-  .brand-ic { width: 30px; height: 30px; flex: none; }
+  .brand { gap: 10px; font-size: 18px; letter-spacing: -.03em; }
+  .brand-ic { width: 30px; height: 30px; }
   .tb-title { display: none; }
+  .topbar.scrolled .tb-lead .brand { opacity: 1; }
+  .toolbar { flex-direction: row; align-items: center; justify-content: space-between; }
+  .toolbar .seg { align-self: auto; width: 320px; }
   .tabbar {
     --h: 48px; --pad: 4px; top: calc(var(--safe-t) + 10px); bottom: auto; z-index: 40;
     width: min(520px, calc(100vw - 420px));
@@ -447,11 +488,14 @@ svg.i { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-widt
   .tab:hover:not([aria-current="page"]) { color: var(--accent); }
   .main { padding-bottom: 64px; }
   .envs { grid-template-columns: repeat(3, 1fr); }
-  .page-head h1 { font-size: 40px; }
   .hero { padding: 34px 36px 28px; }
   .hero .actions .btn { flex: 0 0 auto; padding: 0 22px; font-size: 16px; }
   .hero .stat b { font-size: 21px; }
 }
+/* Area sentuh minimal 44px tanpa mengubah ukuran visual */
+.pill, .icon-btn, .monthnav button { position: relative; }
+.pill::after, .icon-btn::after, .monthnav button::after { content: ""; position: absolute; inset: -6px; }
+.monthnav button.ml::after { inset: -6px 0; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
 }
@@ -471,10 +515,10 @@ svg.i { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-widt
   <div>
     <div class="topbar" id="topbar">
       <div class="topbar-in">
-        <div class="brand"><svg class="brand-ic" viewBox="80 76 352 352" aria-hidden="true"><defs><mask id="bm"><rect width="512" height="512" fill="#fff"/><circle cx="256" cy="226" r="86" fill="#000"/></mask></defs><path class="k" d="M86 268 H426 A230 230 0 0 1 86 268 Z" fill="currentColor" mask="url(#bm)"/><circle class="k" cx="256" cy="226" r="66" fill="currentColor"/></svg><span>Finite</span></div>
-        <span class="tb-title" id="tb-title"></span>
+        <div class="tb-lead"><div class="brand"><svg class="brand-ic" viewBox="80 76 352 352" aria-hidden="true"><defs><mask id="bm"><rect width="512" height="512" fill="#fff"/><circle cx="256" cy="226" r="86" fill="#000"/></mask></defs><path class="k" d="M86 268 H426 A230 230 0 0 1 86 268 Z" fill="currentColor" mask="url(#bm)"/><circle class="k" cx="256" cy="226" r="66" fill="currentColor"/></svg><span>Finite</span></div>
+        <span class="tb-title" id="tb-title" aria-hidden="true"></span></div>
         <span class="grow"></span>
-        <button class="pill" id="pill" type="button"><i></i><span id="pill-t">Lokal</span></button>
+        <button class="pill" id="pill" type="button" aria-haspopup="dialog"><i aria-hidden="true"></i><span id="pill-t">Lokal</span></button>
         <button class="icon-btn" id="add-btn" type="button" aria-label="Tambah"></button>
       </div>
     </div>
@@ -540,6 +584,8 @@ const IC = {
   out: '<path d="M7 7h10v10"/><path d="M7 17 17 7"/>',
   in: '<path d="M17 7 7 17"/><path d="M17 17H7V7"/>',
   set: '<path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/>',
+  hist: '<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/>',
+  bolt: '<path d="M13 3 5 13.5h6L10 21l8-10.5h-6z"/>',
   map: '<circle cx="12" cy="12" r="2.6"/><circle cx="4.5" cy="5.5" r="1.9"/><circle cx="4.5" cy="18.5" r="1.9"/><circle cx="19.5" cy="5.5" r="1.9"/><circle cx="19.5" cy="18.5" r="1.9"/><path d="M10 10.3 6 7M10 13.7 6 17M14 10.3 18 7M14 13.7 18 17"/>',
   plus: '<path d="M12 5v14M5 12h14"/>',
   left: '<path d="M15 6l-6 6 6 6"/>',
@@ -558,7 +604,8 @@ const save = () => { try { localStorage.setItem(LS_KEY, JSON.stringify(S)); } ca
 const ui = {
   tab: 'home',
   month: today().slice(0, 7),
-  filter: { expense: '', topup: '' },
+  filter: { history: '' },
+  histType: 'all',
   mmOpen: new Set(),
   mmJust: '',
   sync: { state: 'idle', msg: '' }
@@ -601,7 +648,7 @@ function mutate(op) {
    Sinkronisasi dengan Apps Script
    ===================================================================== */
 let syncing = false, syncTimer = 0;
-const setSync = (state, msg = '') => { ui.sync = { state, msg }; renderChrome(); if (ui.tab === 'settings') renderMain(); };
+const setSync = (state, msg = '') => { ui.sync = { state, msg }; renderChrome(); refreshSyncSheet(); };
 
 async function api(body) {
   const ctrl = new AbortController(); const to = setTimeout(() => ctrl.abort(), 30000);
@@ -670,11 +717,11 @@ const useCount = (name) => [...S.topups, ...S.expenses].filter((t) => t.category
    ===================================================================== */
 const TABS = [
   { id: 'home', label: 'Beranda', icon: 'home', title: 'Beranda' },
-  { id: 'expense', label: 'Keluar', icon: 'out', title: 'Pengeluaran' },
-  { id: 'topup', label: 'Masuk', icon: 'in', title: 'Top Up' },
+  { id: 'history', label: 'Riwayat', icon: 'hist', title: 'Riwayat' },
   { id: 'map', label: 'Peta', icon: 'map', title: 'Peta' },
-  { id: 'settings', label: 'Atur', icon: 'set', title: 'Pengaturan' }
+  { id: 'settings', label: 'Atur', icon: 'set', title: 'Atur' }
 ];
+const addKind = () => (ui.tab === 'history' && ui.histType === 'topup' ? 'topup' : 'expense');
 const main = $('#main');
 
 function buildNav() {
@@ -693,7 +740,8 @@ function renderChrome() {
   document.title = tab.title + ' · Finite';
 
   const add = $('#add-btn');
-  add.setAttribute('aria-label', ui.tab === 'topup' ? 'Top up baru' : ui.tab === 'settings' ? 'Kategori baru' : 'Pengeluaran baru');
+  add.setAttribute('aria-label', ui.tab === 'settings' ? 'Kategori baru' : addKind() === 'topup' ? 'Top up baru' : 'Pengeluaran baru');
+  add.title = add.getAttribute('aria-label') + (ui.tab === 'settings' ? '' : ' (N)');
 
   const pill = $('#pill'), q = S.queue.length, st = ui.sync.state;
   let s = 'idle', t = 'Lokal';
@@ -704,7 +752,8 @@ function renderChrome() {
     else { s = 'ok'; t = 'Tersinkron'; }
   }
   pill.dataset.s = s; $('#pill-t').textContent = t;
-  pill.title = connected() ? (S.lastSync ? 'Terakhir: ' + new Date(S.lastSync).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) : 'Ketuk untuk sinkron') : 'Hanya di perangkat ini';
+  pill.setAttribute('aria-label', 'Sinkronisasi: ' + t);
+  pill.title = connected() ? (S.lastSync ? 'Terakhir: ' + new Date(S.lastSync).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) : 'Sinkronisasi') : 'Hanya di perangkat ini';
 }
 
 /* ---------- Liquid Glass tab bar ---------- */
@@ -810,21 +859,20 @@ function monthNav() {
     <button data-act="month" data-k="1" aria-label="Bulan berikutnya">${svg('right')}</button></div>`;
 }
 
+const envState = (r) => (r.saldo < 0 ? 'minus' : r.topup > 0 && r.pct <= .15 ? 'low' : 'ok');
+
 function viewHome() {
   const { rows, T } = compute(ui.month);
-  const now = new Intl.DateTimeFormat('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }).format(new Date());
   const envs = rows.map((r) => {
-    const flag = r.saldo < 0 ? `<div class="flag bad">Melebihi ${fmt(-r.saldo)}</div>` : (r.topup > 0 && r.pct <= .15 ? '<div class="flag warn">Hampir habis</div>' : '');
-    return `<button class="env" data-act="env" data-cat="${esc(r.name)}" style="--c:${r.color}" aria-label="${esc(r.name)}, saldo ${fmt(r.saldo)}">
-      <div class="env-top"><span class="dot"></span><span class="nm">${esc(r.name)}</span><span class="pc">${Math.round(r.pct * 100)}%</span></div>
-      <div class="env-note">${esc(r.note)}</div>
-      <div class="env-bal ${r.saldo < 0 ? 'neg' : ''}">${fmt(r.saldo)}</div>
-      <div class="bar"><i style="width:${(r.pct * 100).toFixed(1)}%"></i></div>
-      <div class="env-meta"><span>Bulan ini<br><b>${fmt(r.spentMonth)}</b></span><span style="text-align:right">Top up<br><b>${fmt(r.topup)}</b></span></div>
-      ${flag}</button>`;
+    const st = envState(r);
+    const status = st === 'minus' ? ', minus' : st === 'low' ? ', hampir habis' : '';
+    return `<button class="env${st === 'minus' ? ' minus' : ''}" data-act="env" data-cat="${esc(r.name)}" style="--c:${r.color}" aria-label="${esc(r.name)}, saldo ${fmt(r.saldo)}${status}">
+      <div class="env-top"><span class="dot"></span><span class="nm">${esc(r.name)}</span></div>
+      <div class="env-bal ${st === 'minus' ? 'neg' : ''}">${fmt(r.saldo)}</div>
+      <div class="bar${st === 'low' ? ' warn' : ''}"><i style="width:${st === 'minus' ? 0 : (r.pct * 100).toFixed(1)}%"></i></div>
+    </button>`;
   }).join('');
-  return `<div class="page-head"><h1>Beranda</h1><p>${esc(now)}</p></div>
-  <section class="hero" aria-label="Total cash">
+  return `<section class="hero" aria-label="Total cash">
     <div class="lbl">Total Cash</div>
     <div class="big ${T.saldo < 0 ? 'neg' : ''}">${fmt(T.saldo)}</div>
     <div class="barwrap" role="img" aria-label="${Math.round(T.pct * 100)} persen saldo tersisa"><i style="width:${(T.pct * 100).toFixed(1)}%"></i></div>
@@ -839,41 +887,102 @@ function viewHome() {
       <button class="btn ghost" data-act="new" data-kind="topup">${svg('in')}Top up</button>
     </div>
   </section>
-  ${connected() ? '' : `<div class="notice"><p><b>Mode lokal.</b> Belum tersinkron ke Sheets.</p><button class="link" data-act="tab" data-tab="settings">Hubungkan</button></div>`}
+  ${connected() ? '' : `<div class="notice"><p><b>Mode lokal.</b> Belum tersinkron ke Sheets.</p><button class="link" data-act="syncsheet">Hubungkan</button></div>`}
   <div class="section-head"><h2>Amplop</h2>${monthNav()}</div>
-  ${rows.length ? `<div class="envs">${envs}</div>` : emptyBlock('Belum ada kategori', 'Buat di Pengaturan.', 'Buka', 'tab', 'settings')}`;
+  ${rows.length ? `<div class="envs">${envs}</div>` : emptyBlock('Belum ada kategori', 'Buat amplop pertama di Atur.', 'Buka Atur', 'tab', 'settings')}`;
 }
 
 function emptyBlock(h, p, btn, act, extra) {
   return `<div class="empty"><h3>${h}</h3><p>${p}</p>${btn ? `<button class="btn primary" data-act="${act}" data-kind="${extra}" data-tab="${extra}">${btn}</button>` : ''}</div>`;
 }
 
-function viewTx(kind) {
-  const isExp = kind === 'expense';
-  const all = isExp ? S.expenses : S.topups;
-  const f = ui.filter[kind];
-  const inMonth = all.map((t, i) => ({ t, i })).filter(({ t }) => t.date.startsWith(ui.month) && (!f || t.category === f));
-  inMonth.sort((a, b) => (a.t.date < b.t.date ? 1 : a.t.date > b.t.date ? -1 : b.i - a.i));
-  const total = sum(inMonth.map((x) => x.t));
-  const bal = isExp ? runningBalances() : {};
+/* ---------- Quick-Tap Chips ---------- */
+function getQuickChips(category, kind) {
+  const since = dstr(new Date(Date.now() - 60 * 864e5));
+  const g = new Map();
+  (kind === 'topup' ? S.topups : S.expenses).forEach((t) => {
+    if (t.category !== category || !(t.date >= since)) return;
+    const n = String(t.note || '').trim();
+    if (!n || n === '-') return;
+    const k = n.toLowerCase() + '|' + t.amount;
+    const x = g.get(k);
+    if (!x) g.set(k, { note: n, amount: t.amount, n: 1, last: t.date });
+    else { x.n++; if (t.date >= x.last) { x.last = t.date; x.note = n; } }
+  });
+  return [...g.values()].sort((a, b) => b.n - a.n || (a.last < b.last ? 1 : a.last > b.last ? -1 : 0)).slice(0, 4);
+}
+const chipsHtml = (cat, kind) => getQuickChips(cat, kind).map((c) =>
+  `<button type="button" class="qchip" data-act="quick" data-kind="${kind}" data-cat="${esc(cat)}" data-note="${esc(c.note)}" data-amount="${c.amount}" aria-label="Catat ${esc(c.note)} ${fmt(c.amount)}">${svg('bolt')}<span>${esc(c.note)}</span><b>· ${fmt(c.amount)}</b></button>`).join('');
+
+function quickLog(kind, category, note, amount) {
+  const row = { id: uid(), date: today(), category, amount: Number(amount), note };
+  S.lastCat = category;
+  closeSheet();
+  mutate({ t: 'add', k: kind, row });
+  toast('Dicatat: ' + note + ' · ' + fmt(row.amount), {
+    undo: () => { mutate({ t: 'del', k: kind, id: row.id }); toast('Dibatalkan'); }
+  });
+}
+
+/* ---------- Sheet detail amplop ---------- */
+function openEnvSheet(name) {
+  const r = compute(ui.month).rows.find((x) => x.name === name);
+  if (!r) return;
+  const st = envState(r);
+  const chips = chipsHtml(name, 'expense');
+  openSheet(`<div class="sheet-head"><button type="button" data-act="close">Tutup</button>
+      <h2 class="sheet-title" style="--c:${r.color}"><span class="dot"></span><span>${esc(name)}</span></h2>
+      <button type="button" data-act="envhist" data-cat="${esc(name)}" style="font-weight:400">Riwayat ›</button></div>
+    ${r.note ? `<p class="es-note">${esc(r.note)}</p>` : ''}
+    <div class="es-card" style="--c:${r.color}">
+      <div class="env-bal ${st === 'minus' ? 'neg' : ''}">${fmt(r.saldo)}</div>
+      <div class="bar${st === 'low' ? ' warn' : ''}" role="img" aria-label="${st === 'minus' ? 'Saldo minus' : Math.round(r.pct * 100) + ' persen tersisa'}"><i style="width:${st === 'minus' ? 0 : (r.pct * 100).toFixed(1)}%"></i></div>
+    </div>
+    <div class="es-grid">
+      <div><small>Terpakai ${esc(monthLabel(ui.month))}</small><b>${fmt(r.spentMonth)}</b></div>
+      <div><small>Total top up</small><b>${fmt(r.topup)}</b></div>
+    </div>
+    ${chips ? `<div class="sec-lbl">Catat cepat</div><div class="qchips">${chips}</div>` : ''}
+    <div class="es-actions">
+      <button type="button" class="btn primary" data-act="new" data-kind="expense" data-cat="${esc(name)}">${svg('plus')}Pengeluaran</button>
+      <button type="button" class="btn second" data-act="new" data-kind="topup" data-cat="${esc(name)}">${svg('plus')}Top Up</button>
+    </div>`);
+}
+
+/* ---------- Riwayat terpadu ---------- */
+function viewHistory() {
+  const type = ui.histType, f = ui.filter.history;
+  const pick = (kind) => (type === 'all' || type === kind ? (kind === 'topup' ? S.topups : S.expenses) : [])
+    .map((t, i) => ({ t, i, kind })).filter(({ t }) => t.date.startsWith(ui.month) && (!f || t.category === f));
+  const items = [...pick('expense'), ...pick('topup')];
+  items.sort((a, b) => (a.t.date < b.t.date ? 1 : a.t.date > b.t.date ? -1 : a.kind !== b.kind ? (a.kind === 'topup' ? 1 : -1) : b.i - a.i));
+  const sIn = sum(items.filter((x) => x.kind === 'topup').map((x) => x.t));
+  const sOut = sum(items.filter((x) => x.kind === 'expense').map((x) => x.t));
+  const signed = (v) => (v > 0 ? '+' : '') + fmt(v);
+  const sumLbl = type === 'all' ? 'Arus bersih' : type === 'expense' ? 'Terpakai' : 'Top up';
+  const sumVal = type === 'all' ? signed(sIn - sOut) : fmt(type === 'expense' ? sOut : sIn);
+  const bal = type !== 'topup' ? runningBalances() : {};
   const groups = [];
-  inMonth.forEach(({ t }) => { const g = groups[groups.length - 1]; if (g && g.date === t.date) g.items.push(t); else groups.push({ date: t.date, items: [t] }); });
+  items.forEach((x) => { const g = groups[groups.length - 1]; if (g && g.date === x.t.date) g.items.push(x); else groups.push({ date: x.t.date, items: [x] }); });
+  const gTotal = (g) => { const i = sum(g.items.filter((x) => x.kind === 'topup').map((x) => x.t)), o = sum(g.items.filter((x) => x.kind === 'expense').map((x) => x.t)); return type === 'all' ? signed(i - o) : fmt(i + o); };
   const chips = [`<button class="chip" role="radio" aria-checked="${!f}" data-act="filter" data-cat="">Semua</button>`]
     .concat(S.cats.map((c) => `<button class="chip" role="radio" aria-checked="${f === c.name}" data-act="filter" data-cat="${esc(c.name)}"><span class="dot" style="--c:${colorOf(c.name)}"></span>${esc(c.name)}</button>`)).join('');
-  const list = groups.map((g) => `<div class="date-h"><span>${esc(dayLabel(g.date))}</span><span>${fmt(sum(g.items))}</span></div>
-    <div class="group">${g.items.map((t) => {
+  const seg = (v, l) => `<button role="radio" aria-checked="${type === v}" data-act="htype" data-v="${v}">${l}</button>`;
+  const list = groups.map((g) => `<div class="date-h"><span>${esc(dayLabel(g.date))}</span><span>${gTotal(g)}</span></div>
+    <div class="group">${g.items.map(({ t, kind }) => {
+      const isExp = kind === 'expense';
+      const sub = isExp ? esc(t.category) : `Top Up · ${esc(t.category)}`;
       const sisa = isExp && bal[t.id] != null ? `<span class="row-sub">Sisa <span class="${bal[t.id] < 0 ? 'neg' : ''}">${fmt(bal[t.id])}</span></span>` : '';
       return `<button class="row" data-act="edit" data-kind="${kind}" data-id="${esc(t.id)}" style="--c:${colorOf(t.category)}">
         <span class="av" aria-hidden="true">${esc(([...t.category.trim()][0] || '?').toUpperCase())}</span>
-        <span class="row-main"><span class="row-title">${esc(t.note && t.note !== '-' ? t.note : t.category)}</span><span class="row-sub">${esc(t.category)}</span></span>
+        <span class="row-main"><span class="row-title">${esc(t.note && t.note !== '-' ? t.note : t.category)}</span><span class="row-sub">${sub}</span></span>
         <span class="row-end"><span class="row-amt ${isExp ? '' : 'in'}">${isExp ? '−' : '+'}${fmt(t.amount)}</span>${sisa}</span></button>`;
     }).join('')}</div>`).join('');
-  const label = isExp ? 'Terpakai' : 'Top up';
-  return `<div class="page-head"><h1>${isExp ? 'Pengeluaran' : 'Top Up'}</h1><p>${isExp ? 'Uang keluar per amplop' : 'Uang masuk per amplop'}</p></div>
-  <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:12px">${monthNav()}</div>
-  <div class="summary"><small>${label}${f ? ' · ' + esc(f) : ''}</small><div class="v">${fmt(total)}</div></div>
-  <div class="chips" role="radiogroup" aria-label="Filter kategori">${chips}</div>
-  ${groups.length ? list : emptyBlock('Belum ada catatan', `${esc(monthLabel(ui.month))}${f ? ' · ' + esc(f) : ''}`, isExp ? 'Catat' : 'Top up', 'new', kind)}`;
+  const emptyKind = type === 'topup' ? 'topup' : 'expense';
+  return `<div class="toolbar">${monthNav()}<div class="seg" role="radiogroup" aria-label="Jenis transaksi">${seg('all', 'Semua')}${seg('expense', 'Keluar')}${seg('topup', 'Masuk')}</div></div>
+  <div class="summary"><small>${sumLbl}${f ? ' · ' + esc(f) : ''} · ${esc(monthLabel(ui.month))}</small><div class="v${type === 'all' && sIn - sOut < 0 ? ' neg' : ''}">${sumVal}</div></div>
+  <div class="chips" role="radiogroup" aria-label="Filter amplop">${chips}</div>
+  ${groups.length ? list : emptyBlock('Belum ada catatan', `${esc(monthLabel(ui.month))}${f ? ' · ' + esc(f) : ''}`, emptyKind === 'topup' ? 'Top up' : 'Catat pengeluaran', 'new', emptyKind)}`;
 }
 
 /* ---------- Peta: model ---------- */
@@ -949,8 +1058,7 @@ function viewMap() {
   mmGroups = {};
   const ins = mapSide(S.topups.filter((t) => t.date.startsWith(m)), 'topup');
   const outs = mapSide(S.expenses.filter((t) => t.date.startsWith(m)), 'expense');
-  const head = `<div class="page-head"><h1>Peta</h1><p>Aliran uang per bulan</p></div>
-  <div style="margin-bottom:16px">${monthNav()}</div>`;
+  const head = `<div class="toolbar">${monthNav()}</div>`;
   if (!ins.cats.length && !outs.cats.length) return head + emptyBlock('Belum ada aliran', esc(monthLabel(m)), 'Catat', 'new', 'expense');
   const net = ins.total - outs.total;
   return head + `<div class="mm" id="mm"><svg class="mm-lines" id="mm-lines" aria-hidden="true"></svg>
@@ -1007,47 +1115,56 @@ function openGroupPanel(gk) {
 }
 
 function viewSettings() {
-  const st = ui.sync.state;
-  const sline = !connected() ? ['idle', 'Mode lokal', 'Hanya di perangkat ini']
-    : st === 'error' ? ['error', 'Gagal sinkron', ui.sync.msg]
-    : st === 'syncing' ? ['pending', 'Sinkron…', '']
-    : (st === 'offline' || S.queue.length) ? ['pending', 'Offline', S.queue.length + ' antre']
-    : ['ok', 'Terhubung', S.lastSync ? 'Terakhir ' + new Date(S.lastSync).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) : ''];
   const cats = S.cats.map((c) => `<button class="row" data-act="cat" data-cat="${esc(c.name)}" style="--c:${colorOf(c.name)}"><span class="av" aria-hidden="true"></span><span class="row-main"><span class="row-title">${esc(c.name)}</span><span class="row-sub">${esc(c.note || '—')}</span></span></button>`).join('');
   const th = (v, l) => `<button role="radio" aria-checked="${S.theme === v}" data-act="theme" data-v="${v}">${l}</button>`;
-  return `<div class="page-head"><h1>Pengaturan</h1><p>Sinkron, kategori, tema</p></div>
-  <div class="set-sec"><h2>Google Sheets</h2>
+  return `<div class="set-sec" style="margin-top:8px"><h2>Kategori (${S.cats.length}/${MAX_CATS})</h2>
+    <div class="group">${cats || '<div class="status-line"><b style="font-weight:500;color:var(--text2)">Belum ada kategori</b></div>'}</div>
+    <div class="btn-row"><button class="btn plain" data-act="newcat" ${S.cats.length >= MAX_CATS ? 'disabled' : ''}>${svg('plus')}Tambah Kategori</button></div>
+  </div>
+  <div class="set-sec"><h2>Tema</h2><div class="seg" role="radiogroup" aria-label="Tema">${th('auto', 'Auto')}${th('light', 'Terang')}${th('dark', 'Gelap')}</div></div>
+  <p class="foot" style="font-size:13px;color:var(--text2);margin:28px 4px 0">Google Sheets, tautan perangkat lain, dan ekspor CSV ada di tombol status <button class="link" data-act="syncsheet">${esc($('#pill-t').textContent)}</button> di kanan atas.</p>`;
+}
+
+/* ---------- Sheet Sinkronisasi ---------- */
+function syncStatus() {
+  const st = ui.sync.state;
+  return !connected() ? ['idle', 'Mode lokal', 'Hanya di perangkat ini']
+    : st === 'error' ? ['error', 'Gagal sinkron', ui.sync.msg]
+    : st === 'syncing' ? ['pending', 'Sinkron…', '']
+    : (st === 'offline' || S.queue.length) ? ['pending', st === 'offline' ? 'Offline' : 'Menunggu kirim', S.queue.length + ' antre']
+    : ['ok', 'Tersinkron', S.lastSync ? 'Terakhir ' + new Date(S.lastSync).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) : ''];
+}
+const statusLine = () => { const s = syncStatus(); return `<div class="status-line" id="sync-status" data-s="${s[0]}" role="status"><i aria-hidden="true"></i><b style="font-weight:600">${s[1]}</b><span>${esc(s[2])}</span></div>`; };
+function refreshSyncSheet() {
+  const el = $('#sync-status');
+  if (el) el.outerHTML = statusLine();
+}
+function openSyncSheet() {
+  const on = connected();
+  openSheet(`<div class="sheet-head"><button type="button" data-act="close">Tutup</button><h2>Sinkronisasi</h2><span style="min-width:64px"></span></div>
+    <div class="group">${statusLine()}</div>
+    <div class="sec-lbl">Google Sheets</div>
     <div class="group">
-      <div class="status-line" data-s="${sline[0]}"><i></i><b style="font-weight:600">${sline[1]}</b><span>${esc(sline[2])}</span></div>
       <label class="field stack"><span>URL Web App (/exec)</span><input id="cfg-url" type="url" inputmode="url" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="https://script.google.com/macros/s/…/exec" value="${esc(S.cfg.url)}"></label>
       <label class="field stack"><span>Token</span><input id="cfg-token" type="password" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="API_TOKEN di Code.gs" value="${esc(S.cfg.token)}"></label>
     </div>
     <div class="btn-row">
-      <button class="btn primary" data-act="connect">${connected() ? 'Uji ulang' : 'Hubungkan'}</button>
-      ${connected() ? '<button class="btn plain" data-act="syncnow">Sinkron</button><button class="btn danger" data-act="disconnect">Putuskan</button>' : ''}
+      <button class="btn primary" data-act="connect">${on ? 'Uji Ulang' : 'Hubungkan'}</button>
+      ${on ? '<button class="btn plain" data-act="syncnow">Sinkron Sekarang</button>' : ''}
     </div>
-    <div class="btn-row">
-      <button class="btn plain" data-act="copylink" ${connected() ? '' : 'disabled'}>Salin tautan perangkat lain</button>
-    </div>
-    ${connected() ? '' : `<div class="group" style="margin-top:18px"><label class="field stack"><span>Atau tempel tautan penyiapan</span><input id="cfg-link" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="https://…#cfg=…"></label></div>
-    <div class="btn-row"><button class="btn plain" data-act="uselink">Pakai</button></div>`}
-    <p class="foot">${connected() ? 'Kirim tautan ke iPhone/laptop Anda, lalu tempel di Pengaturan sana. Tautan memuat token — jangan dibagikan.' : 'Salin tautan aktif setelah terhubung.'}</p>
-  </div>
-  <div class="set-sec"><h2>Kategori (${S.cats.length}/${MAX_CATS})</h2>
-    <div class="group">${cats || '<div class="status-line"><b style="font-weight:500;color:var(--text2)">Belum ada kategori</b></div>'}</div>
-    <div class="btn-row"><button class="btn plain" data-act="newcat" ${S.cats.length >= MAX_CATS ? 'disabled' : ''}>${svg('plus')}Tambah</button></div>
-  </div>
-  <div class="set-sec"><h2>Tema</h2><div class="seg" role="radiogroup" aria-label="Tema">${th('auto', 'Auto')}${th('light', 'Terang')}${th('dark', 'Gelap')}</div></div>
-  <div class="set-sec"><h2>Data</h2>
-    <div class="btn-row" style="margin-top:0"><button class="btn plain" data-act="csv">Ekspor CSV</button>${connected() ? '' : '<button class="btn danger" data-act="wipe">Hapus data lokal</button>'}</div>
-  </div>`;
+    <div class="sec-lbl">Perangkat lain</div>
+    <div class="btn-row" style="margin-top:0"><button class="btn plain" data-act="copylink" ${on ? '' : 'disabled'}>Salin Tautan Perangkat Lain</button></div>
+    ${on ? '' : `<div class="group" style="margin-top:12px"><label class="field stack"><span>Atau tempel tautan penyiapan</span><input id="cfg-link" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="https://…#cfg=…"></label></div>
+    <div class="btn-row"><button class="btn plain" data-act="uselink">Pakai Tautan</button></div>`}
+    <p class="foot" style="font-size:13px;color:var(--text2);margin:8px 4px 0">${on ? 'Kirim tautan ke iPhone atau laptop Anda, lalu tempel di sana. Tautan memuat token, jadi jangan dibagikan.' : 'Tombol salin aktif setelah terhubung.'}</p>
+    <div class="sec-lbl">Data</div>
+    <div class="btn-row" style="margin-top:0"><button class="btn plain" data-act="csv">Ekspor CSV</button>
+      ${on ? '<button class="btn danger" data-act="disconnect">Putuskan Koneksi</button>' : '<button class="btn danger" data-act="wipe">Hapus Data Lokal</button>'}</div>`);
 }
 
 function renderMain() {
-  const a = document.activeElement;
-  if (ui.tab === 'settings' && main.contains(a) && /^(INPUT|TEXTAREA)$/.test(a.tagName)) return; // jangan ganggu saat mengetik
   const y = window.scrollY;
-  main.innerHTML = ui.tab === 'home' ? viewHome() : ui.tab === 'settings' ? viewSettings() : ui.tab === 'map' ? viewMap() : viewTx(ui.tab);
+  main.innerHTML = ui.tab === 'home' ? viewHome() : ui.tab === 'settings' ? viewSettings() : ui.tab === 'map' ? viewMap() : viewHistory();
   window.scrollTo(0, y);
   if (ui.tab === 'map') { drawMap(true); ui.mmJust = ''; }
 }
@@ -1092,14 +1209,14 @@ function confirmDialog({ title, message, ok, danger, cancel = 'Batal' }) {
   });
 }
 
-function openTxForm(kind, id) {
+function openTxForm(kind, id, presetCat) {
   if (!S.cats.length) { toast('Buat kategori dulu'); go('settings'); return; }
   const isExp = kind === 'expense';
   const list = isExp ? S.expenses : S.topups;
   const cur = id ? list.find((x) => x.id === id) : null;
   const f = {
     amount: cur ? String(cur.amount) : '',
-    category: cur ? cur.category : (ui.filter[kind] || (S.cats.some((c) => c.name === S.lastCat) ? S.lastCat : S.cats[0].name)),
+    category: cur ? cur.category : (presetCat || ui.filter.history || (S.cats.some((c) => c.name === S.lastCat) ? S.lastCat : S.cats[0].name)),
     date: cur ? cur.date : (ui.month === today().slice(0, 7) ? today() : ui.month + '-01'),
     note: cur ? cur.note : ''
   };
@@ -1110,6 +1227,7 @@ function openTxForm(kind, id) {
     <div class="sheet-head"><button type="button" data-act="close">Batal</button><h2>${title}</h2><button type="submit" id="f-save" disabled>Simpan</button></div>
     <div class="amount-wrap"><span class="cur">Rp</span><input id="f-amount" inputmode="numeric" autocomplete="off" placeholder="0" aria-label="Jumlah dalam rupiah"></div>
     <p class="hint" id="f-hint" aria-live="polite"></p>
+    ${cur ? '' : '<div class="qwrap" id="f-quick" hidden><div class="sec-lbl">Catat cepat</div><div class="qchips" id="f-qchips"></div></div>'}
     <div class="lbl2" id="f-cl">Kategori</div>
     <div class="chipgrid" role="radiogroup" aria-labelledby="f-cl">${names.map((n) => `<button type="button" class="chip" role="radio" data-c="${esc(n)}"><span class="dot" style="--c:${colorOf(n)}"></span>${esc(n)}</button>`).join('')}</div>
     <div class="group">
@@ -1120,7 +1238,16 @@ function openTxForm(kind, id) {
   </form>`);
   const amt = $('#f-amount', s), hint = $('#f-hint', s), saveBtn = $('#f-save', s);
   const digits = () => amt.value.replace(/\D/g, '');
+  let quickFor = null;
+  const refreshQuick = () => {
+    const q = $('#f-quick', s);
+    if (!q || quickFor === f.category) return;
+    quickFor = f.category;
+    const html = chipsHtml(f.category, kind);
+    $('#f-qchips', s).innerHTML = html; q.hidden = !html;
+  };
   const refresh = () => {
+    refreshQuick();
     const n = Number(digits());
     const valid = n > 0 && f.category && /^\d{4}-\d{2}-\d{2}$/.test($('#f-date', s).value);
     saveBtn.disabled = !valid;
@@ -1195,9 +1322,18 @@ function openCatForm(name) {
 }
 
 let toastT = 0;
-function toast(msg) {
-  const el = $('#toast'); el.textContent = msg; el.classList.add('show');
-  clearTimeout(toastT); toastT = setTimeout(() => el.classList.remove('show'), 2600);
+function toast(msg, { undo } = {}) {
+  const el = $('#toast');
+  el.innerHTML = `<span class="tm">${esc(msg)}</span>${undo ? '<button type="button">Urungkan</button>' : ''}`;
+  el.classList.toggle('act', !!undo);
+  el.classList.add('show');
+  clearTimeout(toastT);
+  const hide = () => { el.classList.remove('show', 'act'); };
+  if (undo) {
+    let used = false;
+    $('button', el).addEventListener('click', () => { if (used) return; used = true; clearTimeout(toastT); undo(); });
+  }
+  toastT = setTimeout(hide, undo ? 3500 : 2600);
 }
 
 /* =====================================================================
@@ -1282,9 +1418,13 @@ document.addEventListener('click', async (e) => {
   switch (d.act) {
     case 'tab': go(d.tab); break;
     case 'month': ui.month = d.k === '0' ? today().slice(0, 7) : shiftMonth(ui.month, Number(d.k)); renderMain(); break;
-    case 'env': ui.filter.expense = d.cat; go('expense'); break;
-    case 'filter': ui.filter[ui.tab] = d.cat; renderMain(); break;
-    case 'new': openTxForm(d.kind); break;
+    case 'env': openEnvSheet(d.cat); break;
+    case 'envhist': closeSheet(true); ui.filter.history = d.cat; ui.histType = 'all'; go('history'); break;
+    case 'filter': ui.filter.history = d.cat; renderMain(); break;
+    case 'htype': ui.histType = d.v; renderChrome(); renderMain(); break;
+    case 'quick': quickLog(d.kind, d.cat, d.note, d.amount); break;
+    case 'syncsheet': openSyncSheet(); break;
+    case 'new': if (d.cat) closeSheet(true); openTxForm(d.kind, null, d.cat); break;
     case 'edit': openTxForm(d.kind, d.id); break;
     case 'mmtoggle': {
       const k = d.k;
@@ -1296,7 +1436,7 @@ document.addEventListener('click', async (e) => {
     case 'newcat': openCatForm(); break;
     case 'close': closeSheet(); break;
     case 'theme': S.theme = d.v; save(); applyTheme(); renderMain(); break;
-    case 'connect': await connect($('#cfg-url').value, $('#cfg-token').value); break;
+    case 'connect': if (await connect($('#cfg-url').value, $('#cfg-token').value) && openState) closeSheet(); break;
     case 'syncnow': sync(); break;
     case 'disconnect':
       if (await confirmDialog({ title: 'Putuskan?', message: 'Data di Sheets tetap aman.', ok: 'Putuskan', danger: true })) {
@@ -1321,13 +1461,12 @@ document.addEventListener('click', async (e) => {
       break;
   }
 });
-$('#add-btn').title = 'Pengeluaran baru (N)';
-$('#add-btn').addEventListener('click', () => { if (ui.tab === 'topup') openTxForm('topup'); else if (ui.tab === 'settings') openCatForm(); else openTxForm('expense'); });
-$('#pill').addEventListener('click', () => { if (connected()) sync(); else go('settings'); });
+$('#add-btn').addEventListener('click', () => { if (ui.tab === 'settings') openCatForm(); else openTxForm(addKind()); });
+$('#pill').addEventListener('click', openSyncSheet);
 document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape' && openState) { closeSheet(); return; }
   const t = e.target;
-  if (e.key.toLowerCase() === 'n' && !e.metaKey && !e.ctrlKey && !e.altKey && !openState && !/^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName)) { e.preventDefault(); openTxForm('expense'); }
+  if (e.key.toLowerCase() === 'n' && !e.metaKey && !e.ctrlKey && !e.altKey && !openState && !/^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName)) { e.preventDefault(); openTxForm(addKind()); }
 });
 let lastY = window.scrollY;
 const wide = matchMedia('(min-width: 900px)');
@@ -1361,8 +1500,11 @@ matchMedia('(prefers-color-scheme: dark)').addEventListener('change', applyTheme
    ===================================================================== */
 buildNav();
 applyTheme();
-const h = location.hash.match(/^#\/(home|expense|topup|map|settings)$/);
-if (h) ui.tab = h[1];
+const h = location.hash.match(/^#\/(home|history|map|settings|expense|topup)$/);
+if (h) {
+  if (h[1] === 'expense' || h[1] === 'topup') { ui.histType = h[1]; ui.tab = 'history'; history.replaceState(null, '', '#/history'); } // tautan lama
+  else ui.tab = h[1];
+}
 render();
 importHashConfig().then(() => scheduleSync(50));
 if ('serviceWorker' in navigator && /^https?:$/.test(location.protocol)) navigator.serviceWorker.register('sw.js').catch(() => {});
