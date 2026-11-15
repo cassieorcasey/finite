@@ -1,6 +1,6 @@
 // Service worker: cache cangkang aplikasi agar bisa dibuka offline.
 // Data transaksi disimpan terpisah di localStorage oleh aplikasi.
-const CACHE = 'finite-v9';
+const CACHE = 'finite-v10';
 const SHELL = ['./', './index.html', './manifest.webmanifest', './icon-192.png', './icon-512.png', './apple-touch-icon.png'];
 
 self.addEventListener('install', (e) => {

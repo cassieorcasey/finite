@@ -46,6 +46,11 @@
   --font: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", "Segoe UI Variable Display", "Segoe UI", system-ui, sans-serif;
   --safe-b: env(safe-area-inset-bottom, 0px);
   --safe-t: env(safe-area-inset-top, 0px);
+  --safe-l: env(safe-area-inset-left, 0px);
+  --safe-r: env(safe-area-inset-right, 0px);
+  --px: 16px;
+  --pl: max(var(--px), var(--safe-l));
+  --pr: max(var(--px), var(--safe-r));
   color-scheme: light;
 }
 @media (prefers-color-scheme: dark) {
@@ -91,7 +96,7 @@ h1, h2, h3, p { margin: 0; }
 /* ---------- Layout ---------- */
 .shell { min-height: 100dvh; }
 .sidebar { display: none; }
-.main { max-width: 1040px; margin: 0 auto; padding: 0 16px calc(96px + var(--safe-b)); }
+.main { max-width: 1040px; margin: 0 auto; padding: 0 var(--pr) calc(96px + var(--safe-b)) var(--pl); }
 
 .topbar {
   position: sticky; top: 0; z-index: 20;
@@ -103,7 +108,7 @@ h1, h2, h3, p { margin: 0; }
   background: var(--glass); border-bottom-color: var(--line);
   -webkit-backdrop-filter: saturate(180%) blur(22px); backdrop-filter: saturate(180%) blur(22px);
 }
-.topbar-in { max-width: 1040px; margin: 0 auto; padding: 8px 16px; min-height: 52px; display: flex; align-items: center; gap: 10px; }
+.topbar-in { max-width: 1040px; margin: 0 auto; padding: 8px var(--pr) 8px var(--pl); min-height: 52px; display: flex; align-items: center; gap: 10px; }
 .tb-lead { position: relative; min-width: 0; height: 32px; display: flex; align-items: center; }
 .tb-title { position: absolute; left: 0; font-weight: 600; font-size: 17px; white-space: nowrap; opacity: 0; transform: translateY(4px); transition: opacity .2s, transform .25s; }
 .topbar.scrolled .tb-title { opacity: 1; transform: none; }
@@ -219,9 +224,9 @@ svg.i { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-widt
 .hero .barwrap { margin: 16px 0 6px; height: 6px; border-radius: 99px; background: rgba(255,255,255,.16); overflow: hidden; }
 .hero .barwrap i { display: block; height: 100%; border-radius: 99px; background: #f5f5f7; transition: width .5s cubic-bezier(.2,.8,.2,1); }
 .hero .barcap { font-size: 13px; color: rgba(245,245,247,.72); }
-.hero .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 18px; padding-top: 16px; border-top: 1px solid rgba(255,255,255,.14); }
+.hero .stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-top: 18px; padding-top: 16px; border-top: 1px solid rgba(255,255,255,.14); }
 .hero .stat small { display: block; font-size: 12px; color: rgba(245,245,247,.66); line-height: 1.25; }
-.hero .stat b { display: block; font-size: clamp(13px, 3.7vw, 15px); white-space: nowrap; font-weight: 600; margin-top: 3px; font-variant-numeric: tabular-nums; letter-spacing: -.02em; }
+.hero .stat b { display: block; font-size: clamp(13px, 3.7vw, 15px); overflow-wrap: anywhere; font-weight: 600; margin-top: 3px; font-variant-numeric: tabular-nums; letter-spacing: -.02em; }
 .hero .actions { display: flex; gap: 10px; margin-top: 20px; }
 .hero .actions .btn { padding: 0 16px; font-size: 15px; flex: 1 1 auto; }
 .hero .stats { align-items: start; }
@@ -245,7 +250,7 @@ svg.i { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-widt
 .link:hover { text-decoration: underline; }
 
 /* ---------- Envelope cards ---------- */
-.envs { display: grid; gap: 12px; grid-template-columns: 1fr; }
+.envs { display: grid; gap: 12px; grid-template-columns: minmax(0, 1fr); }
 .env {
   text-align: left; background: var(--card); border-radius: 22px; padding: 18px 18px 16px; box-shadow: var(--shadow);
   display: block; width: 100%; transition: transform .2s cubic-bezier(.2,.8,.2,1), box-shadow .2s;
@@ -294,9 +299,9 @@ svg.i { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-widt
 /* ---------- Lists ---------- */
 .summary { background: var(--card); border-radius: 22px; padding: 18px 20px; box-shadow: var(--shadow); }
 .summary small { color: var(--text2); font-size: 14px; }
-.summary .v { font-size: 34px; font-weight: 700; letter-spacing: -.035em; font-variant-numeric: tabular-nums; }
+.summary .v { font-size: clamp(26px, 8vw, 34px); overflow-wrap: anywhere; font-weight: 700; letter-spacing: -.035em; font-variant-numeric: tabular-nums; }
 .summary .v.neg { color: var(--bad); }
-.chips { display: flex; gap: 8px; overflow-x: auto; padding: 14px 0 4px; margin: 0 -16px; padding-inline: 16px; scrollbar-width: none; }
+.chips { display: flex; gap: 8px; overflow-x: auto; padding: 14px 0 4px; margin: 0 calc(-1 * var(--pr)) 0 calc(-1 * var(--pl)); padding-inline: var(--pl) var(--pr); scrollbar-width: none; }
 .chips::-webkit-scrollbar { display: none; }
 .chip { flex: none; height: 34px; padding: 0 14px; border-radius: 999px; background: var(--fill); font-size: 15px; font-weight: 500; display: inline-flex; align-items: center; gap: 7px; }
 .chip[aria-checked="true"], .chip[aria-pressed="true"] { background: var(--text); color: var(--bg); }
@@ -349,7 +354,7 @@ svg.i { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-widt
 .backdrop.open { opacity: 1; }
 .sheet {
   position: fixed; z-index: 51; left: 0; right: 0; bottom: 0; max-height: 94dvh; overflow-y: auto; overscroll-behavior: contain;
-  background: var(--sheet); border-radius: 24px 24px 0 0; padding: 0 16px calc(24px + var(--safe-b));
+  background: var(--sheet); border-radius: 24px 24px 0 0; padding: 0 var(--pr) calc(24px + var(--safe-b)) var(--pl);
   transform: translateY(100%); transition: transform .38s cubic-bezier(.2,.9,.25,1);
 }
 .sheet.open { transform: translateY(0); }
@@ -371,7 +376,7 @@ svg.i { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-widt
 .hint b { color: var(--text); font-weight: 600; } .hint .neg { color: var(--bad); font-weight: 600; }
 .lbl2 { font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: .02em; color: var(--text2); margin: 4px 4px 8px; }
 .chipgrid { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 18px; }
-.chipgrid .chip { background: var(--sheet-card); height: 40px; padding: 0 16px; }
+.chipgrid .chip { background: var(--sheet-card); height: auto; min-height: 40px; padding: 8px 16px; max-width: 100%; text-align: left; overflow-wrap: anywhere; }
 .chipgrid .chip[aria-checked="true"] { background: var(--accent); color: var(--on-accent); }
 .sheet .btn.danger { width: 100%; margin-top: 18px; background: var(--sheet-card); }
 .sheet .btn.primary { width: 100%; margin-top: 18px; height: 50px; }
@@ -441,8 +446,8 @@ svg.i { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-widt
   position: relative; z-index: 1; padding: 16px 18px; border-radius: 22px; color: var(--text);
   background: var(--card); border: 1px solid var(--line); box-shadow: var(--shadow);
 }
-.mm-center small, .mm-center span { display: block; font-size: 13px; color: var(--text2); }
-.mm-center b { display: block; font-size: 30px; font-weight: 700; letter-spacing: -.035em; line-height: 1.15; margin: 2px 0; font-variant-numeric: tabular-nums; }
+.mm-center small, .mm-center span { display: block; overflow-wrap: anywhere; font-size: 13px; color: var(--text2); }
+.mm-center b { display: block; font-size: clamp(22px, 7vw, 30px); overflow-wrap: anywhere; font-weight: 700; letter-spacing: -.035em; line-height: 1.15; margin: 2px 0; font-variant-numeric: tabular-nums; }
 .mm-center b.neg { color: var(--bad); }
 @media (min-width: 1100px) {
   .mm { display: grid; grid-template-columns: minmax(0, 1fr) 216px minmax(0, 1fr); align-items: center; gap: 0 44px; padding: 16px 0; }
@@ -466,9 +471,8 @@ svg.i { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-widt
 
 /* ---------- Desktop ---------- */
 @media (min-width: 700px) {
-  .envs { grid-template-columns: repeat(2, 1fr); }
-  .main, .topbar-in { padding-inline: 24px; }
-  .chips { margin: 0 -24px; padding-inline: 24px; }
+  .envs { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  :root { --px: 24px; }
   .toast { bottom: 32px; }
 }
 @media (min-width: 900px) {
@@ -487,7 +491,7 @@ svg.i { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-widt
   .tab svg.i { width: 19px; height: 19px; }
   .tab:hover:not([aria-current="page"]) { color: var(--accent); }
   .main { padding-bottom: 64px; }
-  .envs { grid-template-columns: repeat(3, 1fr); }
+  .envs { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .hero { padding: 34px 36px 28px; }
   .hero .actions .btn { flex: 0 0 auto; padding: 0 22px; font-size: 16px; }
   .hero .stat b { font-size: 21px; }
@@ -1162,10 +1166,19 @@ function openSyncSheet() {
       ${on ? '<button class="btn danger" data-act="disconnect">Putuskan Koneksi</button>' : '<button class="btn danger" data-act="wipe">Hapus Data Lokal</button>'}</div>`);
 }
 
+let lastRendered = '';
 function renderMain() {
   const y = window.scrollY;
+  const oldChips = main.querySelector('.chips'), sl = oldChips && lastRendered === ui.tab ? oldChips.scrollLeft : -1;
   main.innerHTML = ui.tab === 'home' ? viewHome() : ui.tab === 'settings' ? viewSettings() : ui.tab === 'map' ? viewMap() : viewHistory();
   window.scrollTo(0, y);
+  const chips = main.querySelector('.chips');
+  if (chips) {
+    const on = chips.querySelector('[aria-checked="true"]');
+    if (sl >= 0) chips.scrollLeft = sl;
+    else if (on) chips.scrollLeft = on.offsetLeft - (chips.clientWidth - on.offsetWidth) / 2; // masuk dari tab lain: tampilkan chip terpilih
+  }
+  lastRendered = ui.tab;
   if (ui.tab === 'map') { drawMap(true); ui.mmJust = ''; }
 }
 function render() { renderChrome(); renderMain(); }
@@ -1180,6 +1193,7 @@ function go(tab) {
    ===================================================================== */
 const layer = $('#layer');
 let openState = null;
+const setInert = (on) => { [$('.shell'), $('#tabbar')].forEach((el) => { if (el) el.inert = on; }); }; // fokus & pembaca layar tetap di dalam sheet
 function openSheet(html, { onClose, dialog } = {}) {
   closeSheet(true);
   const prev = document.activeElement;
@@ -1188,6 +1202,7 @@ function openSheet(html, { onClose, dialog } = {}) {
   requestAnimationFrame(() => { b.classList.add('open'); s.classList.add('open'); });
   openState = { prev, onClose };
   document.body.style.overflow = 'hidden';
+  setInert(true);
   return s;
 }
 function closeSheet(instant) {
@@ -1195,6 +1210,7 @@ function closeSheet(instant) {
   const st = openState; openState = null;
   const b = $('.backdrop', layer), s = $('.sheet', layer);
   document.body.style.overflow = '';
+  setInert(false);
   const done = () => { layer.innerHTML = ''; };
   if (instant || !b) done(); else { b.classList.remove('open'); s.classList.remove('open'); setTimeout(() => { if (!openState) done(); }, 320); }
   try { st.prev && st.prev.focus && st.prev.focus({ preventScroll: true }); } catch (e) { /* abaikan */ }
@@ -1202,7 +1218,7 @@ function closeSheet(instant) {
 }
 function confirmDialog({ title, message, ok, danger, cancel = 'Batal' }) {
   return new Promise((resolve) => {
-    let result = false;
+    let result = null; // null = ditutup tanpa memilih
     const s = openSheet(`<div class="dialog"><h2>${esc(title)}</h2><p>${esc(message)}</p><div class="btns"><button class="btn ${danger ? 'danger' : 'primary'}" data-dlg="ok">${esc(ok)}</button><button class="btn plain" data-dlg="no">${esc(cancel)}</button></div></div>`, { dialog: true, onClose: () => resolve(result) });
     s.addEventListener('click', (e) => { const b = e.target.closest('[data-dlg]'); if (!b) return; result = b.dataset.dlg === 'ok'; closeSheet(); });
     setTimeout(() => $('[data-dlg="no"]', s) && $('[data-dlg="no"]', s).focus(), 60);
@@ -1263,10 +1279,17 @@ function openTxForm(kind, id, presetCat) {
     }
   };
   const $$ = (q, r) => [...r.querySelectorAll(q)];
-  amt.value = f.amount ? nf.format(Number(f.amount)) : '';
+  amt.value = f.amount ? nf.format(Math.round(Number(f.amount))) : '';
   const sizeAmt = () => { amt.style.width = Math.max(1, amt.value.length) + 'ch'; };
   sizeAmt();
   amt.addEventListener('input', () => { const d = digits().slice(0, 12); amt.value = d ? nf.format(Number(d)) : ''; sizeAmt(); refresh(); });
+  amt.addEventListener('paste', (e) => { // "25000.00" / "25.000,50": 1–2 digit tail adalah desimal, bukan ribuan
+    const t = ((e.clipboardData || window.clipboardData).getData('text') || '').trim().replace(/^Rp\.?\s*/i, '');
+    if (!t) return;
+    e.preventDefault();
+    amt.value = t.replace(/[.,]\d{1,2}$/, '');
+    amt.dispatchEvent(new Event('input', { bubbles: true }));
+  });
   $('#f-date', s).addEventListener('input', refresh);
   s.addEventListener('click', (e) => { const c = e.target.closest('[data-c]'); if (c) { f.category = c.dataset.c; refresh(); } });
   $('#txf', s).addEventListener('submit', (e) => {
@@ -1359,7 +1382,8 @@ async function connect(url, token) {
     const localCount = S.topups.length + S.expenses.length;
     let upload = false;
     if (localCount && !old.url) {
-      upload = await confirmDialog({ title: 'Unggah data lokal?', message: `${localCount} catatan ada di perangkat ini.`, ok: 'Unggah', cancel: 'Pakai data Sheets' });
+      upload = await confirmDialog({ title: 'Unggah data lokal?', message: `${localCount} catatan ada di perangkat ini. “Pakai data Sheets” menggantinya dengan isi Sheets.`, ok: 'Unggah', cancel: 'Pakai data Sheets' });
+      if (upload === null) { S.cfg = old; setSync('idle'); keepInputs(url, token); toast('Dibatalkan'); return false; }
     }
     if (upload) {
       const ops = [];
@@ -1401,9 +1425,10 @@ async function applyCfgCode(code) {
 
 function exportCsv() {
   const q = (v) => '"' + String(v ?? '').replace(/"/g, '""') + '"';
+  const qt = (v) => { const t = String(v ?? ''); return q(/^[=+@\t\r]|^-./.test(t) ? "'" + t : t); }; // cegah formula Excel dari teks
   const lines = [['Jenis', 'Tanggal', 'Kategori', 'Keterangan', 'Jumlah'].map(q).join(',')];
-  S.topups.forEach((t) => lines.push([q('Top Up'), q(t.date), q(t.category), q(t.note), t.amount].join(',')));
-  S.expenses.forEach((t) => lines.push([q('Pengeluaran'), q(t.date), q(t.category), q(t.note), t.amount].join(',')));
+  S.topups.forEach((t) => lines.push([q('Top Up'), q(t.date), qt(t.category), qt(t.note), t.amount].join(',')));
+  S.expenses.forEach((t) => lines.push([q('Pengeluaran'), q(t.date), qt(t.category), qt(t.note), t.amount].join(',')));
   const blob = new Blob(['﻿' + lines.join('\r\n')], { type: 'text/csv;charset=utf-8' });
   const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'finite-' + today() + '.csv';
   document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 2000);

@@ -63,6 +63,7 @@ The tests run `Code.gs` against a small fake Apps Script runtime and drive the a
 node test/gas-test.js    # Code.gs API behavior
 node test/e2e.js         # app flows
 node test/map-e2e.js     # Peta tab
+node test/regress.js     # regressions found in the bug audit
 ```
 
 The end-to-end tests need Playwright and Chromium. Only Chromium has been tested; Safari and real Google Sheets have not.
